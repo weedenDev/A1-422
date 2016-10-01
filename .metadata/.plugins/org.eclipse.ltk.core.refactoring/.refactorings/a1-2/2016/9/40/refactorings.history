@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 2 elements to &apos;Assignment 1&apos;&#x0A;- Original project: &apos;a1-2&apos;&#x0A;- Destination element: &apos;Assignment 1&apos;&#x0A;- Original elements:&#x0A;     lego&#x0A;     java_cup&#x0A;- Update references to refactored element" description="Move folders" destination="=Assignment 1" element1="lego" element2="java_cup" files="0" flags="589830" folders="2" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1475255361557" units="0" version="1.0"/>
+</session>

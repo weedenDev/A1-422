@@ -1,0 +1,51 @@
+// Evaluator for Lego formulas
+package lego;
+
+import lego.parser.*;
+
+// data structure to store values of free variables
+class Env {
+}
+
+public class Eval {
+    public static boolean eval(Formula f) {
+    	if (f instanceof Atomic){
+    		// Variables
+    		 int x = 0;
+    		 int y = 0;
+    		//handle Atomic
+    			Atomic a = (Atomic) f;
+    			if (a.e1 instanceof Int){
+    				x = Integer.parseInt(a.e1.toString());
+    			}
+    			if (a.e2 instanceof Int){
+    				y = Integer.parseInt(a.e2.toString());
+    			}
+    			if (a.rel_op.toString() == ">"){
+    				if (x > y)
+    					return true;
+    				else
+    					return false;
+    				
+    			}
+    			if (a.rel_op.toString() == ">="){
+    				if(x >=y)
+    					return true;
+    				else
+    					return false;
+    				
+    			}
+    			if (a.rel_op.toString() == "="){
+    				if(x == y)
+    					return true;
+    				else
+    					return false;
+    				
+    			}
+	//return eval(f, new Env());
+    }
+    }
+    public static boolean eval(Formula f, Env e) {
+	return true;
+    }
+}

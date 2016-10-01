@@ -1,0 +1,118 @@
+// Evaluator for Lego formulas
+package lego;
+
+import lego.parser.*;
+
+// data structure to store values of free variables
+class Env {
+}
+
+public class Eval {
+
+	public static boolean eval(Formula f) {
+
+		if (f instanceof Atomic) {
+			// Variables
+			int x = 0;
+			int y = 0;
+			// handle Atomic
+			Atomic a = (Atomic) f;
+			if (a.e1 instanceof Int) {
+				x = Integer.parseInt(a.e1.toString());
+			}
+			if (a.e2 instanceof Int) {
+				y = Integer.parseInt(a.e2.toString());
+			}
+			if (a.rel_op.toString() == ">") {
+				if (x > y)
+					return true;
+				else
+					return false;
+
+			}
+			if (a.rel_op.toString() == ">=") {
+				if (x >= y)
+					return true;
+				else
+					return false;
+
+			}
+			if (a.rel_op.toString() == "=") {
+				if (x == y){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		if (f instanceof Binary) {
+			return binEval(f);
+
+		}
+		if (f instanceof Unary) {
+			return unEval(f);
+		}else {
+			System.out.println("Formula given not recognized as Unary, " + "Binary, or Atomic.");
+			return false;
+		}
+		// return eval(f, new Env());
+		// eclipse made me put this statement here??
+	}
+
+	public static boolean eval(Formula f, Env e) {
+		return true;
+	}
+	public static boolean unEval(Formula f){
+		//placeholder
+		return true;
+	}
+	public static boolean binEval(Formula f) {
+		if (f instanceof Binary) {
+			boolean result = false;
+			boolean result2 = false;
+			Binary b = (Binary) f;
+			if (b.f1 instanceof Binary) {
+				System.out.println(b.f1.toString());
+				result = binEval(b.f1);
+			} else {
+				System.out.println(b.f1.toString()+" "+"atomic");
+				result = eval(b.f1);
+			}
+
+			if (b.f2 instanceof Binary) {
+				System.out.println(b.f2.toString());
+				result2 = binEval(b.f2);
+			} else { // it will be atomic
+				System.out.println(b.f2.toString()+" "+"atomic");
+				result2 = eval(b.f1);
+			}
+			
+			/*
+			//For Result Type Error Checking
+			System.out.println(result);
+			System.out.println(result2);
+		 			*/
+			
+			if (b.bin_conn.toString() == "&&") {
+				return result && result2;
+			}
+			if (b.bin_conn.toString() == "||") {
+				return result || result2;
+			}
+			if (b.bin_conn.toString() == "->") {
+				return ((!result) || result2);
+			}
+			if (b.bin_conn.toString() == "<->") {
+				return !(result && !result2) && !(result2 && !result);
+			} else {
+				return false;
+			}
+		}
+		else{
+			System.out.println("there was a Non Binary argument passed to binary eval");
+			return false;
+		}
+	}
+}
