@@ -1,4 +1,5 @@
 // Evaluator for Lego formulas
+//Edited by 10107325 Cody Weeden
 package lego;
 
 import java.util.Stack;
@@ -7,27 +8,60 @@ import lego.parser.*;
 
 // data structure to store values of free variables
 class Env {
-	Stack<Var> e = new Stack<Var>();
+	   Stack e; 
+	   Env(){
+		   e = new Stack();
+	   }
 }
 
 public class Eval {
 
 	public static boolean eval(Formula f) {
+		return eval(f, new Env());
+	}
 
-		// System.out.println("atomic");
-
+	// there is a path through this method in which no value is returned
+	public static boolean eval(Formula f, Env e) {
+		//System.out.println("entered an enviroment");
+		
 		if (f instanceof Atomic) {
 			// System.out.println("atomic");
 			// Variables
 			int x = 0;
 			int y = 0;
+			
+			if(e.e.isEmpty()){
+				System.out.println("The stack is empty");
+			}
+/*			else if (e.e.size() == 2){
+				y = (int) e.e.peek();
+				e.e.pop();
+				x = (int) e.e.peek();
+			}
+			else if (e.e.size () == 1){
+				x = (int) e.e.peek();
+				
+			}*/
+/*			else{
+				System.out.println("the stack has more than 2 values on it.");
+			}*/
+			//System.out.println((e.e.peek().toString()));
+			
 			// handle Atomic
 			Atomic a = (Atomic) f;
+			//System.out.println(a.e1.toString());
 			if (a.e1 instanceof Int) {
 				x = Integer.parseInt(a.e1.toString());
+				
+			}
+			else if (a.e1 instanceof Var){
+				x= (int)e.e.peek();
 			}
 			if (a.e2 instanceof Int) {
 				y = Integer.parseInt(a.e2.toString());
+			}
+			else if (a.e2 instanceof Var){
+				y= (int)e.e.peek();
 			}
 			if (a.rel_op.toString() == ">") {
 				if (x > y)
@@ -54,21 +88,13 @@ public class Eval {
 
 		if (f instanceof Binary) {
 			// System.out.println("Binary");
-			return binEval(f);
+			return binEval(f, e);
 		}
 		if (f instanceof Unary) {
 			// System.out.println("Unary");
-			return unEval(f);
-		} else {
-			System.out.println("Formula given not recognized as Unary, " + "Binary, or Atomic. Trying quantified");
-			return eval(f, new Env());
+			return unEval(f, e);
 		}
-		// return eval(f, new Env());
-	}
-
-	// there is a path through this method in which no value is returned
-	public static boolean eval(Formula f, Env e) {
-		//System.out.println("entered an enviroment");
+		
 		if (f instanceof Quantified) {
 			Quantified q = (Quantified) f;
 			
@@ -80,18 +106,15 @@ public class Eval {
 				int lower = Integer.parseInt(q.dom.from.toString());
 				int upper = Integer.parseInt(q.dom.to.toString());
 				int index = 0;
-				 e.e.push(q.var);
+				 
 				 for(int i = lower; i < upper; i++){
-					if (q.f instanceof Atomic){
-						result = eval(q.f);
-					}
-					else{
+					 e.e.push(i);
 					result = eval(q.f,e);
-					}
 					resultArray[index] = result;
 					index++;
+					e.e.pop();
 				 }
-				 e.e.pop();
+				 //e.e.pop();
 				 while (index > 0){
 					 if (resultArray[index-1]== false){
 						 // They all need to be true forall to be true
@@ -112,21 +135,20 @@ public class Eval {
 				int lower = Integer.parseInt(q.dom.from.toString());
 				int upper = Integer.parseInt(q.dom.to.toString());
 				int index = 0;
-				 e.e.push(q.var);
+				 
 				 for(int i = lower; i < upper; i++){
-					if (q.f instanceof Atomic){
-						result = eval(q.f);
-					}
-					else{
-					result = eval(q.f,e);
-					}
+					e.e.push(i);
+					result = eval(q.f, e);
 					resultArray[index] = result;
+					if (index >99990){
+						System.out.println("Reaching result array limits");
+					}
 					index++;
 				 }
-				 e.e.pop();
+				 //e.e.pop();
 				 while (index > 0){
-					 if (resultArray[index-1]== true){
-						 // They all need to be true forall to be true
+					 if (resultArray[index-1] == true){
+						 // only one needs to be true for it to be true.
 						 return true;
 					 }
 					 //if it is true continue iterating
@@ -146,19 +168,23 @@ public class Eval {
 		}
 	}
 
-	public static boolean unEval(Formula f) {
+	public static boolean unEval(Formula f, Env e) {
 		boolean result;
 		if (f instanceof Unary) {
 			Unary u = (Unary) f;
 			if (u.f instanceof Unary) {
-				result = unEval(u.f);
+				result = unEval(u.f, e);
 			}
 			if (u.f instanceof Binary) {
-				result = binEval(u.f);
+				result = binEval(u.f, e);
 			}
 			if (u.f instanceof Atomic) {
-				result = eval(u.f);
-			} else {// result isn't Initalized bad...
+				result = eval(u.f, e);
+			} 
+			if (u.f instanceof Quantified){
+				result = eval(u.f, e);
+			}
+			else {// result isn't Initalized bad...
 				System.out.println("Error 02:Result didn't have a value in unEval setting it to true so it fails");
 				result = true;// will return false (safer assumption)
 			}
@@ -172,25 +198,25 @@ public class Eval {
 		}
 	}
 
-	public static boolean binEval(Formula f) {
+	public static boolean binEval(Formula f, Env e) {
 		if (f instanceof Binary) {
 			boolean result = false;
 			boolean result2 = false;
 			Binary b = (Binary) f;
 			if (b.f1 instanceof Binary) {
 				// System.out.println(b.f1.toString());
-				result = binEval(b.f1);
+				result = binEval(b.f1, e);
 			} else {
 				// System.out.println(b.f1.toString()+" "+"atomic");
-				result = eval(b.f1);
+				result = eval(b.f1, e);
 			}
 
 			if (b.f2 instanceof Binary) {
 				// System.out.println(b.f2.toString());
-				result2 = binEval(b.f2);
+				result2 = binEval(b.f2, e);
 			} else { // it will be atomic
 				// System.out.println(b.f2.toString()+" "+"atomic");
-				result2 = eval(b.f2);
+				result2 = eval(b.f2, e);
 			}
 
 			/*
