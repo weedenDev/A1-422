@@ -14,7 +14,7 @@ public class Main {
 	}
 	else {
           String fn = argv[0];
-	    try {
+	    //try {
 		// parse formula
 		Formula f = Parse.parse(fn);
 		// print formula
@@ -24,11 +24,11 @@ public class Main {
 		System.out.println("Here's its value:");
 		System.out.println(Eval.eval(f));
 	    }
-	    catch (java.lang.Exception e) {
+	   /* catch (java.lang.Exception e) {
 		System.out.println("Error: Content of file "+fn+" syntactically incorrect. Terminating");
-		// System.exit(1);
-	    }
-	}
+		System.exit(1);
+	    }*/
+	//}
     }
 } // class Main
 

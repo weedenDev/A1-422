@@ -1,0 +1,1 @@
+exists p : [1..100] . !exists x : [2..100] . ((p mod x = 0) && (p > x)) && forall a : [1..100] . forall b : [1..100] . ((p mod (a*b) = 0) && ((p mod a = 0) || (p mod b = 0)))

@@ -1,0 +1,1 @@
+forall x : [3..10] . forall y : [1..100] . (!(x mod y = 0) || !(y mod x = 0))

@@ -1,0 +1,1 @@
+forall p : [1..100] . exists a : [1..100] . exists b : [1..100] . ((p mod (a+b) = 0) -> ((p mod a = 0) && (p mod b = 0)))

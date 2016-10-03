@@ -1,0 +1,1 @@
+exists x : [1..10] . exists a : [1..10] . exists b : [1..10] . exists c : [1..10] . ((!(a=x)) && (x mod a = 0)) && ((!(b=x)) && (x mod b = 0)) && ((!(c=x)) && (x mod c = 0)) && (x = (a + b + c))
