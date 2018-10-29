@@ -1,2 +1,2 @@
-# CISCFTT
-First assignment FTT in  Queen's University 2016
+# CISC 422
+First assignment 422 in  Queen's University 2016
